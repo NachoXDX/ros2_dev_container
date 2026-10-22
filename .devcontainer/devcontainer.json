@@ -31,6 +31,7 @@
         "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind",
         "source=/dev,target=/dev,type=bind",
         "source=ros2-claude-config-${devcontainerId},target=/home/ros/.claude,type=volume",
+        "source=ros2-ccache-${devcontainerId},target=/home/ros/.cache/ccache,type=volume",
         "source=${localWorkspaceFolder}/.devcontainer,target=/home/ros/ws/.devcontainer,type=bind,readonly",
         "source=${localWorkspaceFolder}/.vscode,target=/home/ros/ws/.vscode,type=bind,readonly",
         "source=${localWorkspaceFolder}/.git/hooks,target=/home/ros/ws/.git/hooks,type=bind,readonly",
@@ -61,11 +62,7 @@
             ],
             "settings": {
                 "C_Cpp.default.compileCommands": "${workspaceFolder}/build/compile_commands.json",
-                "C_Cpp.default.cppStandard": "c++17",
                 "python.analysis.extraPaths": [
-                    "/opt/ros/lyrical/lib/python3.14/site-packages"
-                ],
-                "python.autoComplete.extraPaths": [
                     "/opt/ros/lyrical/lib/python3.14/site-packages"
                 ],
                 "files.exclude": {

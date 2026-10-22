@@ -62,13 +62,16 @@ RUN userdel -r ubuntu 2>/dev/null || true \
 
 ENV RMW_IMPLEMENTATION=rmw_fastrtps_cpp \
     QT_X11_NO_MITSHM=1 \
-    COLCON_DEFAULTS_FILE=/home/${USERNAME}/ws/colcon_defaults.yaml
+    COLCON_DEFAULTS_FILE=/home/${USERNAME}/ws/colcon_defaults.yaml \
+    CCACHE_DIR=/home/${USERNAME}/.cache/ccache
 
 RUN { \
         echo ''; \
         echo "source /opt/ros/${ROS_DISTRO}/setup.bash"; \
         echo '[ -f ~/ws/install/setup.bash ] && source ~/ws/install/setup.bash'; \
         echo '[ -f /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash ] && source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash'; \
+        echo '# RViz Ogre view flickers under Qt HiDPI scaling (see README Troubleshooting)'; \
+        echo "alias rviz2='QT_ENABLE_HIGHDPI_SCALING=0 QT_FONT_DPI=192 rviz2'"; \
     } >> /home/${USERNAME}/.bashrc
 
 USER ${USERNAME}
@@ -77,7 +80,7 @@ USER ${USERNAME}
 # single volume mounted there keeps the login across rebuilds.
 ENV PATH=/home/${USERNAME}/.local/bin:${PATH} \
     CLAUDE_CONFIG_DIR=/home/${USERNAME}/.claude
-RUN mkdir -p /home/${USERNAME}/.claude \
+RUN mkdir -p /home/${USERNAME}/.claude /home/${USERNAME}/.cache/ccache \
     && if [ "$INSTALL_CLAUDE_CODE" = "true" ]; then \
         curl -fsSL https://claude.ai/install.sh | bash; \
     fi
