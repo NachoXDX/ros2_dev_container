@@ -1,0 +1,20 @@
+# colcon
+build/
+install/
+log/
+
+# Python
+__pycache__/
+*.pyc
+
+# Editors
+*.swp
+.idea/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Tool caches
+.cache/
+.ccache/

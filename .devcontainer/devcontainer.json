@@ -1,0 +1,85 @@
+{
+    "name": "ROS 2 Lyrical (NVIDIA)",
+    "build": {
+        "context": "..",
+        "dockerfile": "Dockerfile",
+        "args": {
+            "INSTALL_GAZEBO": "true",
+            "INSTALL_NAV2": "false",
+            "INSTALL_MOVEIT": "false",
+            "INSTALL_CUDA": "false",
+            "INSTALL_CLAUDE_CODE": "true"
+        }
+    },
+    "remoteUser": "ros",
+    "updateRemoteUserUID": true,
+    "workspaceMount": "source=${localWorkspaceFolder},target=/home/ros/ws,type=bind",
+    "workspaceFolder": "/home/ros/ws",
+    "runArgs": [
+        "--network=host",
+        "--ipc=host",
+        "--cap-add=SYS_PTRACE",
+        "--device-cgroup-rule=c 226:* rmw",
+        "--device-cgroup-rule=c 81:* rmw",
+        "--device-cgroup-rule=c 188:* rmw",
+        "--device-cgroup-rule=c 166:* rmw",
+        "--device-cgroup-rule=c 13:* rmw",
+        "--device-cgroup-rule=c 189:* rmw",
+        "--gpus=all"
+    ],
+    "mounts": [
+        "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind",
+        "source=/dev,target=/dev,type=bind",
+        "source=ros2-claude-config-${devcontainerId},target=/home/ros/.claude,type=volume",
+        "source=${localWorkspaceFolder}/.devcontainer,target=/home/ros/ws/.devcontainer,type=bind,readonly",
+        "source=${localWorkspaceFolder}/.vscode,target=/home/ros/ws/.vscode,type=bind,readonly",
+        "source=${localWorkspaceFolder}/.git/hooks,target=/home/ros/ws/.git/hooks,type=bind,readonly",
+        "source=${localWorkspaceFolder}/.git/config,target=/home/ros/ws/.git/config,type=bind,readonly"
+    ],
+    "containerEnv": {
+        "DISPLAY": "${localEnv:DISPLAY}",
+        "QT_QPA_PLATFORM": "xcb",
+        "NVIDIA_VISIBLE_DEVICES": "all",
+        "NVIDIA_DRIVER_CAPABILITIES": "all",
+        "__NV_PRIME_RENDER_OFFLOAD": "1",
+        "__GLX_VENDOR_LIBRARY_NAME": "nvidia",
+        "__EGL_VENDOR_LIBRARY_FILENAMES": "/usr/share/glvnd/egl_vendor.d/10_nvidia.json"
+    },
+    "initializeCommand": "xhost +SI:localuser:$(id -un) >/dev/null || echo 'warning: xhost failed, GUI apps may not open'",
+    "postCreateCommand": "bash .devcontainer/post-create.sh",
+    "postStartCommand": "bash .devcontainer/post-start.sh",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "anthropic.claude-code",
+                "ms-vscode.cpptools-extension-pack",
+                "ms-python.python",
+                "ms-python.vscode-pylance",
+                "redhat.vscode-xml",
+                "redhat.vscode-yaml",
+                "ranch-hand-robotics.rde-pack"
+            ],
+            "settings": {
+                "C_Cpp.default.compileCommands": "${workspaceFolder}/build/compile_commands.json",
+                "C_Cpp.default.cppStandard": "c++17",
+                "python.analysis.extraPaths": [
+                    "/opt/ros/lyrical/lib/python3.14/site-packages"
+                ],
+                "python.autoComplete.extraPaths": [
+                    "/opt/ros/lyrical/lib/python3.14/site-packages"
+                ],
+                "files.exclude": {
+                    "build/": true,
+                    "install/": true,
+                    "log/": true
+                },
+                "search.exclude": {
+                    "build/": true,
+                    "install/": true,
+                    "log/": true
+                },
+                "terminal.integrated.defaultProfile.linux": "bash"
+            }
+        }
+    }
+}
